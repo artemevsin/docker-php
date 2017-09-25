@@ -11,7 +11,7 @@ services:
     links:
       - mysql:mysql
     environment:
-      - VIRTUAL_HOST=${CI_ENVIRONMENT_SLUG}.${CI_PROJECT_NAME}.felicity.cofis.cz
+      - VIRTUAL_HOST=remotehost.host
     networks:
       - proxynet
 
