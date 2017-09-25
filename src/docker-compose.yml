@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+  webserver:
+    build: ./apache
+    volumes:
+      - ./..:/var/www/html
+      - ./data/apache:/var/log/apache2
+      - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
+    links:
+      - mysql:mysql
+    environment:
+      - VIRTUAL_HOST=${CI_ENVIRONMENT_SLUG}.${CI_PROJECT_NAME}.felicity.cofis.cz
+    networks:
+      - proxynet
+
+  mysql:
+    build: ./mysql
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./data/mysql-tmp:/tmp/mysql
+    networks:
+      - proxynet
+
+networks:
+  proxynet:
+    external: true
