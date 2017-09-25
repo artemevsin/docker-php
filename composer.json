@@ -1,0 +1,14 @@
+{
+    "name": "artemevsin/docker-php",
+    "description": "Prepared docker environment with PHP, Apache and MySQL",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Artem Evsin",
+            "email": "artem@evsin.cz"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
