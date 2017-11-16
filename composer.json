@@ -11,8 +11,7 @@
     ],
     "minimum-stability": "stable",
     "bin": [
-        "src/run_local.sh",
-        "src/run_local.bat"
+        "src/run_local"
     ],
     "require": {}
 }
