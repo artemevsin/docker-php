@@ -1,9 +1,9 @@
 @ECHO OFF
 REM on this page you can get some help with docker https://github.com/moby/moby/issues/22338
-REM if you are using docker toolbox please be sure, that you have files in C:\Users you want to share into docker containers
+REM if you are using docker toolbox please be sure, that your files are under C:\Users folder if you want to share into docker containers
 REM on windows you should mount absolute path to folder like: /c/Users/project/mysuperproject
 
-REM on windows you probably should use another IP instead of 127.0.0.1 - you could get it with docker-machine ip default
+REM on windows you probably should use another IP instead of 127.0.0.1 - you could get it with 'docker-machine ip default' command
 
 docker-machine status | find /i "Stopped"
 if not errorlevel 1 (
@@ -37,4 +37,5 @@ if not errorlevel 1 (
     )
 )
 
+if exists
 docker-compose -f docker-compose-local.yml up -d --force-recreate --build
