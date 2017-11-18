@@ -5,30 +5,30 @@ REM on windows you should mount absolute path to folder like: /c/Users/project/m
 
 REM on windows you probably should use another IP instead of 127.0.0.1 - you could get it with 'docker-machine ip default' command
 
-docker-machine status | find /i "Stopped"
+docker-machine status | find /i "Stopped" >nul
 if not errorlevel 1 (
     docker-machine start
 )
 FOR /f "tokens=*" %%i IN ('docker-machine env --shell cmd default') DO @%%i
 
-docker-machine status | find /i "Running"
+docker-machine status | find /i "Running" >nul
 if not errorlevel 0 (
-    echo "Cannot start docker-machine"
+    echo Cannot start docker-machine
     GOTO:EOF
 )
 
-docker network ls -f name=proxynet | find /i "proxynet"
+docker network ls -f name=proxynet | find /i "proxynet" >nul
 if not errorlevel 1 (
-    echo "Proxynet has already started"
+    echo Proxynet has already started
 ) else (
-    docker network create --driver=bridge proxynet
+    docker network create --driver=bridge proxynet >nul
 )
 
-docker ps -f name=nginx-proxy-net | find /i "nginx-proxy-net"
+docker ps -f name=nginx-proxy-net | find /i "nginx-proxy-net" >nul
 if not errorlevel 1 (
-    echo "Nginx already running"
+    echo Nginx already running
 ) else (
-    docker ps -a -f name=nginx-proxy-net | find /i "nginx-proxy-net"
+    docker ps -a -f name=nginx-proxy-net | find /i "nginx-proxy-net" >nul
     if not errorlevel 1 (
         docker start nginx-proxy-net
     ) else (
@@ -37,5 +37,36 @@ if not errorlevel 1 (
     )
 )
 
-if exists
-docker-compose -f docker-compose-local.yml up -d --force-recreate --build
+if exist %1 (
+    set docker_compose_file=%1
+) else (
+    echo 'Load default docker-compose.yml file'
+    timeout 5 >nul
+    set docker_compose_file=docker-compose-local.yml
+)
+
+if "%~2"=="" (
+    set project_name=myproject
+) else (
+    set project_name=%2
+)
+
+docker-compose -p %project_name% -f %docker_compose_file% up -d --force-recreate --build >nul
+
+FOR /F "tokens=* USEBACKQ" %%F IN (`docker exec -i %project_name%_webserver_1 printenv VIRTUAL_HOST`) DO (
+    SET vhost=%%F
+)
+
+FOR /F "tokens=* USEBACKQ" %%F IN (`docker-machine ip default`) DO (
+    SET ip=%%F
+)
+echo(
+echo -------------------------------------------------------------------------------
+echo ^|                                  IMPORTANT                                  ^|
+echo -------------------------------------------------------------------------------
+echo Do not forget add this line to your C:\Windows\System32\drivers\etc\hosts file:
+echo %ip%       %vhost%
+echo(
+echo(
+
+

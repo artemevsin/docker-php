@@ -7,12 +7,12 @@ services:
     volumes:
       - ./..:/var/www/html
       - ./data/apache:/var/log/apache2
-      - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./php_local.ini:/usr/local/etc/php/conf.d/custom.ini
       - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
     links:
       - mysql:mysql
     environment:
-      - VIRTUAL_HOST=remote.host
+      - VIRTUAL_HOST=localhost
     networks:
       - proxynet
 
