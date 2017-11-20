@@ -19,9 +19,9 @@ else
 fi
 
 echo $(pwd)
-if [[ ! -f ./../../docker-compose-local.yml ]]; then
-    DOCKER_COMPOSE_LOCAL=./../artemevsin/docker/src/docker-compose-local.yml
+if [[ ! -f ./../../../../docker-compose-local.yml ]]; then
+    DOCKER_COMPOSE_LOCAL=./docker-compose-local.yml
 else
-    DOCKER_COMPOSE_LOCAL=./../../docker-compose-local.yml
+    DOCKER_COMPOSE_LOCAL=./../../../../docker-compose-local.yml
 fi
 docker-compose -f $DOCKER_COMPOSE_LOCAL up -d --force-recreate --build
