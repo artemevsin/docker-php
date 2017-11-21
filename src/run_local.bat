@@ -32,8 +32,11 @@ if not errorlevel 1 (
     if not errorlevel 1 (
         docker start nginx-proxy-net
     ) else (
-        docker run -d --network=proxynet --name=nginx-proxy-net -e HTTPS_METHOD=noredirect -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro -v %cd%/my_proxy.conf:/etc/nginx/conf.d/my_proxy.conf:ro jwilder/nginx-proxy
-        docker run -d --network=proxynet --name=nginx-proxy-net -e HTTPS_METHOD=noredirect -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
+        if exist %2 (
+            docker run -d --network=proxynet --name=nginx-proxy-net -e HTTPS_METHOD=noredirect -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro -v %2:/etc/nginx/conf.d/my_proxy.conf:ro jwilder/nginx-proxy
+        ) else (
+            docker run -d --network=proxynet --name=nginx-proxy-net -e HTTPS_METHOD=noredirect -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
+        )
     )
 )
 
@@ -45,10 +48,10 @@ if exist %1 (
     set docker_compose_file=docker-compose-local.yml
 )
 
-if "%~2"=="" (
+if "%~3"=="" (
     set project_name=myproject
 ) else (
-    set project_name=%2
+    set project_name=%3
 )
 
 docker-compose -p %project_name% -f %docker_compose_file% up -d --force-recreate --build >nul

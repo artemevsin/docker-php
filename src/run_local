@@ -14,14 +14,17 @@ else
   if [[ $(docker ps -a -f name=nginx-proxy-net | grep -w nginx-proxy-net) ]]; then
     $(docker start nginx-proxy-net)
   else
-    docker run -d --network=proxynet --name=nginx-proxy-net -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro -v $(pwd)/my_proxy.conf:/etc/nginx/conf.d/my_proxy.conf:ro jwilder/nginx-proxy
+      if [[ ! -f $2 ]]; then
+        docker run -d --network=proxynet --name=nginx-proxy-net -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
+      else
+        docker run -d --network=proxynet --name=nginx-proxy-net -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro -v $2:/etc/nginx/conf.d/my_proxy.conf:ro jwilder/nginx-proxy
+      fi
   fi
 fi
 
-echo $(pwd)
-if [[ ! -f ./../../../../docker-compose-local.yml ]]; then
+if [[ ! -f $1 ]]; then
     DOCKER_COMPOSE_LOCAL=./docker-compose-local.yml
 else
-    DOCKER_COMPOSE_LOCAL=./../../../../docker-compose-local.yml
+    DOCKER_COMPOSE_LOCAL=$1
 fi
 docker-compose -f $DOCKER_COMPOSE_LOCAL up -d --force-recreate --build
