@@ -25,3 +25,4 @@ RUN apt-get update && apt-get install -y \
 RUN pecl install xdebug
 RUN pecl install zip
 RUN docker-php-ext-install mysql
+RUN docker-php-ext-install soap
