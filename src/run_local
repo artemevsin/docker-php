@@ -4,7 +4,7 @@ if [[ $(docker network ls -f name=proxynet | grep -w proxynet) ]]; then
   echo "Network proxynet already exists"
 else
   echo "Creating network: proxynet"
-  $(docker network create --driver=bridge proxynet)
+  docker network create --driver=bridge proxynet > /dev/null
 fi
 
 if [[ $(docker ps -f name=nginx-proxy-net | grep -w nginx-proxy-net) ]]; then
@@ -12,19 +12,33 @@ if [[ $(docker ps -f name=nginx-proxy-net | grep -w nginx-proxy-net) ]]; then
 else
   echo "Start Nginx"
   if [[ $(docker ps -a -f name=nginx-proxy-net | grep -w nginx-proxy-net) ]]; then
-    $(docker start nginx-proxy-net)
+    docker start nginx-proxy-net > /dev/null
   else
       if [[ ! -f $2 ]]; then
-        docker run -d --network=proxynet --name=nginx-proxy-net -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
+        docker run -d --network=proxynet --name=nginx-proxy-net -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy > /dev/null
       else
-        docker run -d --network=proxynet --name=nginx-proxy-net -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro -v $2:/etc/nginx/conf.d/my_proxy.conf:ro jwilder/nginx-proxy
+        docker run -d --network=proxynet --name=nginx-proxy-net -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro -v $2:/etc/nginx/conf.d/my_proxy.conf:ro jwilder/nginx-proxy > /dev/null
       fi
   fi
 fi
 
 if [[ ! -f $1 ]]; then
+    echo "Load default docker-compose.yml file"
     DOCKER_COMPOSE_LOCAL=./docker-compose-local.yml
 else
     DOCKER_COMPOSE_LOCAL=$1
 fi
-docker-compose -f $DOCKER_COMPOSE_LOCAL up -d --force-recreate --build
+
+# Project name
+if [[ ! -f $3 ]]; then
+    echo "Use default project name: myproject"
+    PROJECT_NAME=myproject
+else
+    PROJECT_NAME=$3
+fi
+
+docker-compose -p $PROJECT_NAME -f $DOCKER_COMPOSE_LOCAL up -d --force-recreate --build > /dev/null
+VHOST=$(docker exec -i ${PROJECT_NAME}_webserver_1 printenv VIRTUAL_HOST)
+echo "-------------------------------------------------------------------------------"
+echo "                        Container is available at ${VHOST}                     "
+echo "-------------------------------------------------------------------------------"
