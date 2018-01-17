@@ -1,26 +1,39 @@
 version: '2'
 
+volumes:
+  database:
+    external:
+      name: "database_${PROJECT_NAME}"
+
 services:
   webserver:
-#    build: ./apache5 # PHP 5.6
-    build: ./apache
+    build: ./apache${PHP_VERSION}
     volumes:
-      - ./..:/var/www/html
-      - ./data/apache:/var/log/apache2
+      - ${DOCUMENT_ROOT}:/var/www/html
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
       - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
     links:
       - mysql:mysql
+    env_file:
+      - ./../../../../.env
     environment:
-      - VIRTUAL_HOST=remotehost.host
+      - VIRTUAL_HOST=${PROJECT_NAME}.localhost
     networks:
       - proxynet
 
   mysql:
     build: ./mysql
     volumes:
-      - ./data/mysql:/var/lib/mysql
-      - ./data/mysql-tmp:/tmp/mysql
+      - database:/var/lib/mysql
+    networks:
+      - proxynet
+
+  adminer:
+    build: ./adminer
+    links:
+      - mysql:mysql
+    environment:
+      - VIRTUAL_HOST=adminer.${PROJECT_NAME}.localhost
     networks:
       - proxynet
 
