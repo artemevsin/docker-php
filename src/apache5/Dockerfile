@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get install imagemagick libmagickwand-dev libmagickcore-dev -y \
     && pecl install imagick
 
-RUN pecl install xdebug
+RUN pecl install xdebug-2.5.5
 RUN pecl install zip
 RUN docker-php-ext-install mysql
 RUN docker-php-ext-install soap
