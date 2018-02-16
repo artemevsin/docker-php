@@ -9,7 +9,7 @@ services:
   webserver:
     build: ./apache${PHP_VERSION}
     volumes:
-      - ${DOCUMENT_ROOT}:/var/www/html
+      - ./../../../../:/var/www/html
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
       - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
     links:
