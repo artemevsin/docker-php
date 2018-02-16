@@ -26,3 +26,7 @@ RUN pecl install xdebug
 RUN pecl install zip
 RUN docker-php-ext-install mysql
 RUN docker-php-ext-install soap
+RUN docker-php-ext-install bcmath
+RUN apt-get install -y libpq-dev
+RUN docker-php-ext-install pdo_pgsql
+RUN docker-php-ext-install pgsql
