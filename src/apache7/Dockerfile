@@ -25,7 +25,11 @@ RUN apt-get update && apt-get install -y \
 RUN pecl install xdebug-2.5.5
 RUN pecl install zip
 RUN docker-php-ext-install soap
-RUN docker-php-ext-install bcmath
-RUN apt-get install -y libpq-dev
-RUN docker-php-ext-install pdo_pgsql
-RUN docker-php-ext-install pgsql
+
+RUN wget -q -O - https://packagecloud.io/gpg.key | sudo apt-key add - \
+    && echo "deb http://packages.blackfire.io/debian any main" | sudo tee /etc/apt/sources.list.d/blackfire.list \
+    && sudo apt-get update \
+    && sudo apt-get install blackfire-agent \
+    && sudo /etc/init.d/blackfire-agent restart \
+    && sudo apt-get install blackfire-php \
+    && service apache2 reload
