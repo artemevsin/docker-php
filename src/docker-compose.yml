@@ -19,6 +19,7 @@ services:
       - ./../../../../.env
     environment:
       - VIRTUAL_HOST=${PROJECT_NAME}.localhost
+      - PHP_IDE_CONFIG=serverName=localhost
     networks:
       - proxynet
 
