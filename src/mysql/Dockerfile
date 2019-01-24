@@ -1,4 +1,4 @@
-FROM mysql/mysql-server:5.7.20
+FROM mysql/mysql-server:5.7.24
 
 # ROOT PASSWORD
 # to secure your installation, you should avoid MYSQL_ROOT_PASSWORD and
