@@ -30,6 +30,14 @@ services:
     networks:
       - proxynet
 
+  mysql_test:
+    build: ./mysql
+    networks:
+      - proxynet
+    tmpfs:
+      - /var/lib/mysql/:rw,noexec,nosuid,size=600m
+      - /tmp/:rw,noexec,nosuid,size=50m
+
   adminer:
     build: ./adminer
     links:
