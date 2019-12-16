@@ -20,13 +20,17 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install imap \
     && apt-get install imagemagick libmagickwand-dev libmagickcore-dev -y \
-    && pecl install imagick
-
-RUN pecl install xdebug-2.5.5
-RUN pecl install zip
-RUN docker-php-ext-install mysql
-RUN docker-php-ext-install soap
-RUN docker-php-ext-install bcmath
-RUN apt-get install -y libpq-dev
-RUN docker-php-ext-install pdo_pgsql
-RUN docker-php-ext-install pgsql
+    && pecl install imagick \
+    && pecl install xdebug-2.5.5 \
+    && pecl install zip \
+    && docker-php-ext-install mysql \
+    && docker-php-ext-install soap \
+    && docker-php-ext-install bcmath \
+    && apt-get install -y libpq-dev \
+    && docker-php-ext-install pdo_pgsql \
+    && docker-php-ext-install pgsql \
+    && version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
+    && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$version \
+    && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp \
+    && mv /tmp/blackfire-*.so $(php -r "echo ini_get('extension_dir');")/blackfire.so \
+    && printf "extension=blackfire.so\nblackfire.agent_socket=tcp://blackfire:8707\n" > $PHP_INI_DIR/conf.d/blackfire.ini
