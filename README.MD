@@ -54,6 +54,13 @@ user: dev
 pass: dev
 ```
 
+#### Blackfire
+If you want to use Blackfire you can put your credentials to .env like:
+```
+BLACKFIRE_SERVER_ID=xxx
+BLACKFIRE_SERVER_TOKEN=xxx
+```
+
 ## Credits
 
 Created by Artem Evsin
