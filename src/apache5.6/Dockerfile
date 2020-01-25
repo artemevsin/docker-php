@@ -1,7 +1,8 @@
-FROM php:7.2-apache
+FROM php:5.6-apache
 
-RUN a2enmod rewrite \
-    && apt-get update && apt-get install -y \
+RUN a2enmod rewrite
+
+RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
@@ -12,22 +13,22 @@ RUN a2enmod rewrite \
         libc-client-dev \
         libkrb5-dev \
         g++ \
-        imagemagick \
-        libmagickwand-dev \
-        libmagickcore-dev \
     && docker-php-ext-configure intl \
-    && docker-php-ext-install -j$(nproc) iconv intl pdo pdo_mysql mysqli mbstring bcmath \
+    && docker-php-ext-install -j$(nproc) iconv mcrypt intl pdo pdo_mysql mysqli mbstring bcmath \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install imap \
-    && docker-php-ext-install opcache \
-    && apt-get install  -y \
+    && apt-get install imagemagick libmagickwand-dev libmagickcore-dev -y \
     && pecl install imagick \
-    && pecl install mcrypt-1.0.1 \
-    && pecl install xdebug-2.6.0 \
+    && pecl install xdebug-2.5.5 \
     && pecl install zip \
+    && docker-php-ext-install mysql \
     && docker-php-ext-install soap \
+    && docker-php-ext-install bcmath \
+    && apt-get install -y libpq-dev \
+    && docker-php-ext-install pdo_pgsql \
+    && docker-php-ext-install pgsql \
     && version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$version \
     && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp \
