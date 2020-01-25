@@ -20,16 +20,13 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install imap \
     && apt-get install imagemagick libmagickwand-dev libmagickcore-dev -y \
-    && pecl install imagick
-
-RUN pecl install xdebug
-RUN pecl install zip
-RUN docker-php-ext-install soap
-
-RUN pecl install mcrypt
-RUN docker-php-ext-enable mcrypt
-
-RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
+    && pecl install imagick \
+    && pecl install xdebug \
+    && pecl install zip \
+    && docker-php-ext-install soap \
+    && pecl install mcrypt \
+    && docker-php-ext-enable mcrypt \
+    && version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/$version \
     && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp \
     && mv /tmp/blackfire-*.so $(php -r "echo ini_get('extension_dir');")/blackfire.so \
