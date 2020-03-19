@@ -7,6 +7,7 @@ volumes:
 
 services:
   webserver:
+    container_name: ${PROJECT_NAME}_webserver_1
     build: ./apache${PHP_VERSION}
     volumes:
       - ./../../../../:/var/www/html
@@ -24,6 +25,7 @@ services:
       - proxynet
 
   mysql:
+    container_name: ${PROJECT_NAME}_mysql_1
     build: ./mysql
     volumes:
       - database:/var/lib/mysql
@@ -31,6 +33,7 @@ services:
       - proxynet
 
   mysql_test:
+    container_name: ${PROJECT_NAME}_mysql_test_1
     build: ./mysql
     networks:
       - proxynet
@@ -39,6 +42,7 @@ services:
       - /tmp/:rw,noexec,nosuid,size=50m
 
   adminer:
+    container_name: ${PROJECT_NAME}_adminer_1
     build: ./adminer
     links:
       - mysql:mysql
@@ -48,6 +52,7 @@ services:
       - proxynet
 
   blackfire:
+    container_name: ${PROJECT_NAME}_blackfire_1
     image: blackfire/blackfire
     environment:
       - BLACKFIRE_SERVER_ID=${BLACKFIRE_SERVER_ID}
