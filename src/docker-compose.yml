@@ -16,10 +16,13 @@ services:
     links:
       - mysql:mysql
       - blackfire:blackfire
+      - chrome
+    depends_on:
+      - chrome
     env_file:
       - ./../../../../.env
     environment:
-      - VIRTUAL_HOST=${PROJECT_NAME}.localhost
+      - VIRTUAL_HOST=${PROJECT_NAME}.local
       - PHP_IDE_CONFIG=serverName=localhost
     networks:
       - proxynet
@@ -47,7 +50,7 @@ services:
     links:
       - mysql:mysql
     environment:
-      - VIRTUAL_HOST=adminer.${PROJECT_NAME}.localhost
+      - VIRTUAL_HOST=adminer.${PROJECT_NAME}.local
     networks:
       - proxynet
 
@@ -59,6 +62,15 @@ services:
       - BLACKFIRE_SERVER_TOKEN=${BLACKFIRE_SERVER_TOKEN}
     networks:
       - proxynet
+
+  chrome:
+    image: selenium/standalone-chrome
+    extra_hosts:
+      - "${PROJECT_NAME}.local:172.18.0.1"
+    networks:
+      - proxynet
+    volumes:
+      - /dev/shm:/dev/shm
 
 networks:
   proxynet:

@@ -4,8 +4,10 @@
 
 Package with prepared environment to run your PHP applications in docker containers.
 
-This package contains PHP (5.6, 7.1, 7.2) + Apache , MySQL and Adminer images. The package uses docker-compose tool and whole environment
-is started with it. 
+This package contains PHP (5.6, 7.1, 7.2, 7.4) + Apache , MySQL and Adminer images. The package uses docker-compose tool 
+and whole environment is started with it.
+
+This package also contains Blackfire for better profiling your application and Selenium for running acceptance tests. 
 
 ## Contributing
 
@@ -38,7 +40,7 @@ Create new .env file (or existing one if exists) in root folder. You can use the
 - PHP_VERSION=7
 - DOCUMENT_ROOT=/www
 
-With default configuration your application will be available on http://myproject.localhost.
+With default configuration your application will be available on http://myproject.local.
 
 ### Usage
 In root folder of your project run
@@ -59,6 +61,28 @@ If you want to use Blackfire you can put your credentials to .env like:
 ```
 BLACKFIRE_SERVER_ID=xxx
 BLACKFIRE_SERVER_TOKEN=xxx
+```
+
+#### Selenium tests
+
+For running acceptance tests with codeception you should put something like this in your acceptance.suite.yml:
+```yaml
+actor: AcceptanceTester
+modules:
+    enabled:
+        - WebDriver
+        - \Helper\Acceptance
+    config:
+      WebDriver:
+        url: 'http://myproject.local/'
+        host: chrome
+        port: 4444
+        browser: chrome
+```
+
+Tests are started using this command:
+```bash
+docker exec -it myproject_webserver_1 php vendor/bin/codecept run acceptance
 ```
 
 ## Credits
