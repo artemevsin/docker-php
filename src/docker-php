@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if [[ $(docker network ls -f name=proxynet | grep -w proxynet) ]]; then
   echo "Network proxynet already exists"
