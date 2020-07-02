@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [[ $(docker network ls -f name=proxynet | grep -w proxynet) ]]; then
   echo "Network proxynet already exists"
@@ -26,14 +26,17 @@ PROJECT_NAME=$(cat .env | grep "PROJECT_NAME=" | grep -o "=.*" | cut -d'=' -f 2)
 if [[ ! $(docker volume ls | grep "database_${PROJECT_NAME}") ]]; then
     docker volume create --name="database_${PROJECT_NAME}"
 fi
-
-
-#echo $DOCKER_COMPOSE_LOCAL
-#exit
+ADDITIONAL_HOSTS=$(cat .env | grep "ADDITIONAL_HOSTS=" | grep -o "=.*" | cut -d'=' -f 2)
+if [ -z ${ADDITIONAL_HOSTS} ]; then
+  ADDITIONAL_HOSTS=""
+else
+  ADDITIONAL_HOSTS=",${ADDITIONAL_HOSTS}"
+fi
+echo ${ADDITIONAL_HOSTS}
 
 echo "Starting containers..."
 
-docker-compose -p $PROJECT_NAME -f $DOCKER_COMPOSE_LOCAL up -d --force-recreate --build #>/dev/null 2>&1
+ADDITIONAL_HOSTS=$ADDITIONAL_HOSTS docker-compose -p $PROJECT_NAME -f $DOCKER_COMPOSE_LOCAL up -d --force-recreate --build >/dev/null 2>&1
 VHOST=$(docker exec -i ${PROJECT_NAME}_webserver_1 printenv VIRTUAL_HOST)
 
 # xdebug remote host

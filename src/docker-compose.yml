@@ -22,7 +22,7 @@ services:
     env_file:
       - ./../../../../.env
     environment:
-      - VIRTUAL_HOST=${PROJECT_NAME}.local
+      - VIRTUAL_HOST=${PROJECT_NAME}.local${ADDITIONAL_HOSTS}
       - PHP_IDE_CONFIG=serverName=localhost
     networks:
       - proxynet
