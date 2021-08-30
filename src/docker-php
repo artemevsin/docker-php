@@ -19,7 +19,7 @@ else
 fi
 
 DOCKER_COMPOSE_LOCAL=$(pwd)/vendor/artemevsin/docker-php/src/docker-compose.yml
-ENV_FILE=./../../../../.env
+ENV_FILE=$(pwd)/.env
 PROJECT_NAME=$(cat .env | grep "PROJECT_NAME=" | grep -o "=.*" | cut -d'=' -f 2)
 
 # CREATE DATABASE VOLUME IF NOT EXISTS
@@ -36,7 +36,7 @@ echo ${ADDITIONAL_HOSTS}
 
 echo "Starting containers..."
 
-ADDITIONAL_HOSTS=$ADDITIONAL_HOSTS docker-compose -p $PROJECT_NAME -f $DOCKER_COMPOSE_LOCAL up -d --force-recreate --build >/dev/null 2>&1
+ADDITIONAL_HOSTS=$ADDITIONAL_HOSTS docker-compose -p $PROJECT_NAME -f $DOCKER_COMPOSE_LOCAL --env-file $ENV_FILE up -d --force-recreate --build >/dev/null 2>&1
 VHOST=$(docker exec -i ${PROJECT_NAME}_webserver_1 printenv VIRTUAL_HOST)
 
 # xdebug remote host
