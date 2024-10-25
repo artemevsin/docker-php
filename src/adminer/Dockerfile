@@ -8,4 +8,4 @@ RUN sed -i \
             -e "s/^upload_max_filesize.*/upload_max_filesize = 2048M/" \
             -e "s/^; display_errors.*/display_errors = on/" \
             -e "s@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i -S opensmtpd:25@" \
-            /etc/php8/php.ini
+            /etc/php83/php.ini
